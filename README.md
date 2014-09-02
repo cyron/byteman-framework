@@ -76,13 +76,13 @@ So everything you do locally can also be done remotely throuth SSH.
       // 1. clean the environment  
       CommandManager commandManager = new CommandManager();  
       commandManager.execute("ssh", "server1",  
-            "rm -rf /opt/jboss-eap-6.2/jboss-as/server/it/log/*");  
+            "rm -rf /opt/jboss-eap-6.2/standalone/log/*");  
       commandManager.execute("ssh", "server2",  
-            "rm -rf /opt/jboss-eap-6.2/jboss-as/server/it/log/*");  
+            "rm -rf /opt/jboss-eap-6.2/standalone/log/*");  
       commandManager.execute("ssh", "jms",  
-            "rm -rf /opt/jboss-eap-6.2/jboss-as/server/it/log/*");  
+            "rm -rf /opt/jboss-eap-6.2/standalone/log/*");  
       commandManager.execute("ssh", "jms",  
-            "rm -rf /opt/jboss-eap-6.2/jboss-as/server/it/data/hornetq/*");  
+            "rm -rf /opt/jboss-eap-6.2/standalone/data/hornetq/*");  
       
       // 2. initialize test controller  
       DistributedInstrumentor instrumentor = new DistributedInstrumentorImpl();  
@@ -169,10 +169,10 @@ So everything you do locally can also be done remotely throuth SSH.
       instrumentor.destroy();  
       
       // 15. collect result  
-      repository.collect("server1", "/opt/jboss-eap-6.2/jboss-as/server/it/log/*");  
-      repository.collect("server2", "/opt/jboss-eap-6.2/jboss-as/server/it/log/*");  
-      repository.collect("jms", "/opt/jboss-eap-6.2/jboss-as/server/it/log/*");  
-      repository.collect("jms", "/opt/jboss-eap-6.2/jboss-as/server/it/data/hornetq/journal/*");  
+      repository.collect("server1", "/opt/jboss-eap-6.2/standalone/log/*");  
+      repository.collect("server2", "/opt/jboss-eap-6.2/standalone/log/*");  
+      repository.collect("jms", "/opt/jboss-eap-6.2/standalone/log/*");  
+      repository.collect("jms", "/opt/jboss-eap-6.2/standalone/data/hornetq/journal/*");  
       
       // 16. check error not exists in log files  
       List<File> collectedFiles = repository.getCollectedFiles(null);  
