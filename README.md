@@ -90,9 +90,9 @@ So everything you do locally can also be done remotely throuth SSH.
       DistributedAdapter adapter = instrumentor.getAdapter();  
       
       // 3. start test node  
-      JBossController sender1 = new JBossController("server1");  
-      JBossController sender2 = new JBossController("server2");  
-      JBossController jms = new JBossController("jms");  
+      JBossEAP6StandaloneController sender1 = new JBossController("server1");  
+      JBossEAP6StandaloneController sender2 = new JBossController("server2");  
+      JBossEAP6StandaloneController jms = new JBossController("jms");  
       sender1.start();  
       sender2.start();  
       jms.start();  
