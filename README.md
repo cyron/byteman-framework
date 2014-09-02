@@ -7,8 +7,7 @@ So why invent a new wheel?
 * First, dtest only support test distributed systems locally, means it only starts jboss server on local machine.
 (correct me if i'm wrong)<br>
 Byteman Framework can start jboss server on remote machine via SSH.<br>
-It requires SSH auto login configured between servers, and cygwin or similar tool is requied on Windows.<br>
-(this will be resolved in the next version, using ssh library like sshj)
+Just set the SSH user name and password on Linux, and cygwin or similar tool is requied on Windows.<br>
 
 * Second, dtest uses ServerManager to start jboss server, it does not support EAP6 and the later version.<br>
 Byteman Framework can execute shell script (run.sh or standalone.sh, etc).
@@ -38,23 +37,35 @@ So everything you do locally can also be done remotely throuth SSH.
   this is the configration file required by Byteman Framework.<br> 
 
 ```
-    // test node declaration  
+    // test controller declaration  
     controller.rmi.address=controller  
-    controller.result.dir=/opt/framework-test/result/  
-    node.address.server1=server1  
-    node.address.server2=server2  
-    node.address.jms=jms  
+    controller.result.dir=/opt/framework-test/result/
+    
+    // test node declaration 
+    node.address.server1=server1 ip address
+    node.address.server2=server2 ip address
+    node.address.jms=jms ip address
+    
+    // byteman & byteman framework configuration
+    node.byteman.jar.*=/opt/framework-test/byteman.jar
+    node.bytemanframework.jar.*=/opt/framework-test/byteman-framework.jar
+    
+    // rules applied on jboss startup
+    // node.byteman.scripts.mytarget1=/opt/framework-test/mytarget1.btm
+    // node.byteman.scripts.mytarget2=/opt/framework-test/mytarget2.btm
+    
+    // SSH user & password setting
+    // use wildcast
+    node.ssh.username.*=jboss
+    node.ssh.password.*=password
+    // or individual setting
+    node.ssh.username.jms=jms
+    node.ssh.password.jms=mypass
       
     // test node configuration  
-    node.jboss.address.server1=app2  
-    node.jboss.address.server2=app3  
-    node.jboss.address.jms=app4  
-    node.jboss.home.*=/opt/jboss-eap-5.1.2/jboss-as  
-    node.jboss.server.*=it  
-    node.byteman.jar.*=/opt/byteman-download-2.0.0/lib/byteman.jar  
-    node.bytemanframework.jar.*=/opt/framework-test/byteman-framework.jar  
-    node.jboss.jmxuser.*=admin  
-    node.jboss.jmxpassword.*=admin
+    node.jboss.eap6.home.*=/opt/jboss-eap-6.2/
+    node.jboss.eap6.base.dir.*=/opt/jboss-eap-6.0/standalone
+    node.jboss.eap6.profile.config.*=standalone-full.xml
 ```
 
 * testcase program
@@ -65,13 +76,13 @@ So everything you do locally can also be done remotely throuth SSH.
       // 1. clean the environment  
       CommandManager commandManager = new CommandManager();  
       commandManager.execute("ssh", "server1",  
-            "rm -rf /opt/jboss-eap-5.1.2/jboss-as/server/it/log/*");  
+            "rm -rf /opt/jboss-eap-6.2/jboss-as/server/it/log/*");  
       commandManager.execute("ssh", "server2",  
-            "rm -rf /opt/jboss-eap-5.1.2/jboss-as/server/it/log/*");  
+            "rm -rf /opt/jboss-eap-6.2/jboss-as/server/it/log/*");  
       commandManager.execute("ssh", "jms",  
-            "rm -rf /opt/jboss-eap-5.1.2/jboss-as/server/it/log/*");  
+            "rm -rf /opt/jboss-eap-6.2/jboss-as/server/it/log/*");  
       commandManager.execute("ssh", "jms",  
-            "rm -rf /opt/jboss-eap-5.1.2/jboss-as/server/it/data/hornetq/*");  
+            "rm -rf /opt/jboss-eap-6.2/jboss-as/server/it/data/hornetq/*");  
       
       // 2. initialize test controller  
       DistributedInstrumentor instrumentor = new DistributedInstrumentorImpl();  
@@ -158,10 +169,10 @@ So everything you do locally can also be done remotely throuth SSH.
       instrumentor.destroy();  
       
       // 15. collect result  
-      repository.collect("server1", "/opt/jboss-eap-5.1.2/jboss-as/server/it/log/*");  
-      repository.collect("server2", "/opt/jboss-eap-5.1.2/jboss-as/server/it/log/*");  
-      repository.collect("jms", "/opt/jboss-eap-5.1.2/jboss-as/server/it/log/*");  
-      repository.collect("jms", "/opt/jboss-eap-5.1.2/jboss-as/server/it/data/hornetq/journal/*");  
+      repository.collect("server1", "/opt/jboss-eap-6.2/jboss-as/server/it/log/*");  
+      repository.collect("server2", "/opt/jboss-eap-6.2/jboss-as/server/it/log/*");  
+      repository.collect("jms", "/opt/jboss-eap-6.2/jboss-as/server/it/log/*");  
+      repository.collect("jms", "/opt/jboss-eap-6.2/jboss-as/server/it/data/hornetq/journal/*");  
       
       // 16. check error not exists in log files  
       List<File> collectedFiles = repository.getCollectedFiles(null);  
