@@ -38,7 +38,8 @@ So everything you do locally can also be done remotely throuth SSH.
 
 ```
     // test controller declaration  
-    controller.rmi.address=controller  
+    controller.rmi.address=controller
+    controller.rmi.port=1199
     controller.result.dir=/opt/framework-test/result/
     
     // test node declaration 
