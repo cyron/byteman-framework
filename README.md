@@ -30,6 +30,7 @@ So everything you do locally can also be done remotely throuth SSH.
   * controller: test controller node,  running test case
   * server1 & server2: running application which to be tested
   * jms: JMS server
+  * all node servers are started with byteman agent
 * scenario<br>
   JMS server sends 1 message to each server, and each server will process the message.<br>
   Test case will verify the count of message each server received, and assert the message has been processed.
